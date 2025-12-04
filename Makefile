@@ -1,23 +1,25 @@
 COMPILER = clang++
 CXXFLAGS = -std=c++17 -Wall -fsanitize=undefined
 
-day%: bin/day% | bin
-	@true
-
-bin/day%: 2025/day%/main.cpp
-	$(COMPILER) $(CXXFLAGS) -o $@ $<
-
 bin:
 	mkdir -p bin
 
 clean:
 	rm -rf bin
 
-test-day%: bin/day%
-	cat 2025/day$*/test | ./bin/day$*
+# make 25-1, make run-25-1, make test-25-1
+.SECONDEXPANSION:
+%: bin/$$*
+	@true
 
-run-day%: bin/day%
-	cat 2025/day$*/input | ./bin/day$*
+bin/%: 20$$(word 1,$$(subst -, ,$$*))/day$$(word 2,$$(subst -, ,$$*))/main.cpp | bin
+	$(COMPILER) $(CXXFLAGS) -o $@ $<
 
-.PRECIOUS: bin/day%
+run-%: bin/$$*
+	cat 20$(word 1,$(subst -, ,$*))/day$(word 2,$(subst -, ,$*))/input | ./bin/$*
+
+test-%: bin/$$*
+	cat 20$(word 1,$(subst -, ,$*))/day$(word 2,$(subst -, ,$*))/test | ./bin/$*
+
+.PRECIOUS: bin/%
 .PHONY: build clean
