@@ -1,5 +1,5 @@
 COMPILER = clang++
-CXXFLAGS = -std=c++17 -Wall
+CXXFLAGS = -std=c++17 -Wall -fsanitize=undefined
 
 day%: bin/day% | bin
 	@true
@@ -13,5 +13,11 @@ bin:
 clean:
 	rm -rf bin
 
+test-day%: bin/day%
+	cat 2025/day$*/test | ./bin/day$*
+
+run-day%: bin/day%
+	cat 2025/day$*/input | ./bin/day$*
+
 .PRECIOUS: bin/day%
-.PHONY: clean
+.PHONY: build clean
